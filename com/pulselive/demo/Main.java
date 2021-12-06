@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Example
+public class Main
 {
     public static void main(String[] args)
     {
@@ -12,37 +12,32 @@ public class Example
         tableOutput(list);
     }
 
-    private static void tableOutput(List<LeagueTableEntry> tableEntries)
+    /**
+     * Outputs final table to console
+     * */
+    private static void tableOutput(List<LeagueTableEntry> leagueTableEntries)
     {
-        System.out.printf("%-4s %-25s %5s %5s %5s %5s %5s %5s %5s %5s\n", //Header format
-                "#", "Team", "Pl", "W", "D", "L", "F", "A", "GD", "Pts");
+        System.out.printf("%-5s %-25s %5s %5s %5s %5s %5s %5s %5s %5s\n", //Header format
+                "Pos", "Club", "MP", "W", "D", "L", "F", "A", "GD", "Pts");
         int i = 0;
-        if (i < tableEntries.size())
+        if (i < leagueTableEntries.size())
         {
             do
             {
-                LeagueTableEntry tableEntry = tableEntries.get(i);
-                System.out.printf(stringFormat() + "\n",
-                        (i + 1),
-                        tableEntry.getTeamName(),
-                        tableEntry.getPlayed(),
-                        tableEntry.getWon(),
-                        tableEntry.getDrawn(),
-                        tableEntry.getLost(),
-                        tableEntry.getGoalsFor(),
-                        tableEntry.getGoalsAgainst(),
-                        tableEntry.getGoalDifference(),
-                        tableEntry.getPoints());
+                LeagueTableEntry leagueTableEntry = leagueTableEntries.get(i);
+                System.out.printf("%-5d %-25s %5d %5d %5d %5d %5d %5d %+5d %5d\n",
+                        (i + 1), //prints team position in league
+                        leagueTableEntry.getTeamName(), leagueTableEntry.getPlayed(), leagueTableEntry.getWon(),
+                        leagueTableEntry.getDrawn(), leagueTableEntry.getLost(), leagueTableEntry.getGoalsFor(),
+                        leagueTableEntry.getGoalsAgainst(), leagueTableEntry.getGoalDifference(), leagueTableEntry.getPoints());
                 i++;
-            } while (i < tableEntries.size());
+            } while (i < leagueTableEntries.size());
         }
     }
 
-    private static String stringFormat() //Data format
-    {
-        return "%-4d %-25s %5d %5d %5d %5d %5d %5d %+5d %5d";
-    }
-
+    /**
+     * Data to be displayed in example league table
+     * */
     public static List<LeagueTableEntry> testMatchData()
     {
         /*
@@ -52,7 +47,7 @@ public class Example
           Chelsea - 4pts
           Manchester United - 2pts*/
 
-        // Test Data
+        // Test Match Data
         Match game1 = new Match("Arsenal", "Chelsea", 2, 1); //Arsenal win
         Match game2 = new Match("Chelsea", "Arsenal", 1, 3); //arsenal win
         Match game3 = new Match("Manchester United", "Manchester City", 1, 3); //city win
@@ -66,8 +61,8 @@ public class Example
         Match game11 = new Match("Arsenal", "Manchester City", 1, 0); //arsenal win
         Match game12 = new Match("Manchester City", "Arsenal", 2, 4); //arsenal win
 
-        // Add matches to list
-        List<Match> matches = new ArrayList<>(Arrays.asList(game1, game2, game3, game4, game5, game6, game7, game8, game9, game10, game11, game12));
+        // Add matches to ArrayList
+        ArrayList<Match> matches = new ArrayList<>(Arrays.asList(game1, game2, game3, game4, game5, game6, game7, game8, game9, game10, game11, game12));
 
         LeagueTable table = new LeagueTable(matches);
         return table.getTableEntries();

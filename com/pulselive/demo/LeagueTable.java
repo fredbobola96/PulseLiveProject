@@ -21,22 +21,19 @@ public class LeagueTable
     public LeagueTable(final List<Match> matches)
     {
         leagueTable = new HashMap<>();
-        matches.forEach(this::addMatchResultToLeagueTable);
+        matches.forEach(this::matchResultParser);
     }
 
     /**
-     * Process individual match results and updates the table accordingly
+     * Parse individual match results and updates the table accordingly
      *
      * @param match individual match result
      */
-    private void addMatchResultToLeagueTable(Match match)
+    private void matchResultParser(Match match)
     {
-        //Placeholders for keys
         String homeTeamName = match.getHomeTeam();
         String awayTeamName = match.getAwayTeam();
-
-        //variables to collect data changes
-        LeagueTableEntry homeTableUpdate = leagueTable.get(homeTeamName);
+        LeagueTableEntry homeTableUpdate = leagueTable.get(homeTeamName);//variables to collect data changes
         LeagueTableEntry awayTableUpdate = leagueTable.get(awayTeamName);
 
         if (homeTableUpdate == null) //if home team not found, added for first match
@@ -49,21 +46,20 @@ public class LeagueTable
             awayTableUpdate = new LeagueTableEntry(awayTeamName, 0, 0, 0, 0, 0, 0, 0, 0);
         }
 
-        matchResultProcessor(match, homeTableUpdate, awayTableUpdate);
-
+        resultProcessor(match, homeTableUpdate, awayTableUpdate);
         updateTable(match, homeTeamName, awayTeamName, homeTableUpdate, awayTableUpdate);
     }
 
     /**
-     * Parses match results for points table update
+     * Processes match results for points table update
      * */
-    private void matchResultProcessor(Match match, LeagueTableEntry homeTableUpdate, LeagueTableEntry awayTableUpdate)
+    private void resultProcessor(Match match, LeagueTableEntry homeTableUpdate, LeagueTableEntry awayTableUpdate)
     {
         if (match.getHomeScore() > match.getAwayScore()) //HOME WIN
         {
             homeTableUpdate.setWon(homeTableUpdate.getWon() + 1);
-            awayTableUpdate.setLost(awayTableUpdate.getLost() + 1);
             homeTableUpdate.setPoints(homeTableUpdate.getPoints() + 3);
+            awayTableUpdate.setLost(awayTableUpdate.getLost() + 1);
         }
         else if (match.getHomeScore() < match.getAwayScore()) //AWAY WIN
         {
@@ -74,8 +70,8 @@ public class LeagueTable
         else //DRAW
         {
             homeTableUpdate.setDrawn(homeTableUpdate.getDrawn() + 1);
-            awayTableUpdate.setDrawn(awayTableUpdate.getDrawn() + 1);
             homeTableUpdate.setPoints(homeTableUpdate.getPoints() + 1);
+            awayTableUpdate.setDrawn(awayTableUpdate.getDrawn() + 1);
             awayTableUpdate.setPoints(awayTableUpdate.getPoints() + 1);
         }
     }
@@ -91,10 +87,9 @@ public class LeagueTable
 
         //update goal scored/against tally
         homeTableUpdate.setGoalsFor(homeTableUpdate.getGoalsFor() + match.getHomeScore());
-        awayTableUpdate.setGoalsFor(awayTableUpdate.getGoalsFor() + match.getAwayScore());
-
         homeTableUpdate.setGoalsAgainst(homeTableUpdate.getGoalsAgainst() + match.getAwayScore());
         awayTableUpdate.setGoalsAgainst(awayTableUpdate.getGoalsAgainst() + match.getHomeScore());
+        awayTableUpdate.setGoalsFor(awayTableUpdate.getGoalsFor() + match.getAwayScore());
 
         //Goal diff calculator
         homeTableUpdate.setGoalDifference(homeTableUpdate.getGoalDifference() + match.getHomeScore() - match.getAwayScore());
@@ -113,7 +108,6 @@ public class LeagueTable
     public List<LeagueTableEntry> getTableEntries()
     {
         ArrayList<LeagueTableEntry> leagueTableList = new ArrayList<>(leagueTable.values());
-
         leagueTableList.sort(Comparator.comparing((LeagueTableEntry leagueTableEntry) -> leagueTableEntry.getPoints()).reversed()
                 .thenComparing(leagueTableEntry1 -> leagueTableEntry1.getGoalDifference(), Comparator.reverseOrder())
                 .thenComparing(leagueTableEntry2 -> leagueTableEntry2.getGoalsFor(), Comparator.reverseOrder())
