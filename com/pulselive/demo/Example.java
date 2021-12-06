@@ -14,7 +14,7 @@ public class Example
 
     private static void tableOutput(List<LeagueTableEntry> tableEntries)
     {
-        System.out.printf("%-4s %-25s %5s %5s %5s %5s %5s %5s %5s %5s\n",
+        System.out.printf("%-4s %-25s %5s %5s %5s %5s %5s %5s %5s %5s\n", //Header format
                 "#", "Team", "Pl", "W", "D", "L", "F", "A", "GD", "Pts");
         int i = 0;
         if (i < tableEntries.size())
@@ -38,7 +38,7 @@ public class Example
         }
     }
 
-    private static String stringFormat()
+    private static String stringFormat() //Data format
     {
         return "%-4d %-25s %5d %5d %5d %5d %5d %5d %+5d %5d";
     }

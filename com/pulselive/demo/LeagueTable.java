@@ -14,22 +14,22 @@ public class LeagueTable
     private final HashMap<String, LeagueTableEntry> leagueTable; //Table hashmap, teamName as key
 
     /**
-     * Instantiates a new league table with List of matches
+     * Initiates a new league table with List of matches
      *
      * @param matches list of matches
      */
     public LeagueTable(final List<Match> matches)
     {
         leagueTable = new HashMap<>();
-        matches.forEach(this::addMatchToLeagueTable);
+        matches.forEach(this::addMatchResultToLeagueTable);
     }
-    
+
     /**
-     * Process individual match record and update the table accordingly
+     * Process individual match results and updates the table accordingly
      *
-     * @param match single match result
+     * @param match individual match result
      */
-    private void addMatchToLeagueTable(Match match)
+    private void addMatchResultToLeagueTable(Match match)
     {
         //Placeholders for keys
         String homeTeamName = match.getHomeTeam();
@@ -39,11 +39,12 @@ public class LeagueTable
         LeagueTableEntry homeTableUpdate = leagueTable.get(homeTeamName);
         LeagueTableEntry awayTableUpdate = leagueTable.get(awayTeamName);
 
-        if (homeTableUpdate == null) //entry not found, initialised for first match
+        if (homeTableUpdate == null) //if home team not found, added for first match
         {
             homeTableUpdate = new LeagueTableEntry(homeTeamName, 0, 0, 0, 0, 0, 0, 0, 0);
         }
-        if (awayTableUpdate == null) //entry not found, initialised for first match
+
+        if (awayTableUpdate == null) //if away team not found, added for first match
         {
             awayTableUpdate = new LeagueTableEntry(awayTeamName, 0, 0, 0, 0, 0, 0, 0, 0);
         }
@@ -53,6 +54,9 @@ public class LeagueTable
         updateTable(match, homeTeamName, awayTeamName, homeTableUpdate, awayTableUpdate);
     }
 
+    /**
+     * Parses match results for points table update
+     * */
     private void matchResultProcessor(Match match, LeagueTableEntry homeTableUpdate, LeagueTableEntry awayTableUpdate)
     {
         if (match.getHomeScore() > match.getAwayScore()) //HOME WIN
@@ -76,24 +80,27 @@ public class LeagueTable
         }
     }
 
+    /**
+     * Updates league table with match data inc. goal diff
+     * */
     private void updateTable(Match match, String homeTeamName, String awayTeamName, LeagueTableEntry homeTableUpdate, LeagueTableEntry awayTableUpdate)
     {
         //Update games played
         homeTableUpdate.setPlayed(homeTableUpdate.getPlayed() + 1);
         awayTableUpdate.setPlayed(awayTableUpdate.getPlayed() + 1);
 
-        //update goal tally
+        //update goal scored/against tally
         homeTableUpdate.setGoalsFor(homeTableUpdate.getGoalsFor() + match.getHomeScore());
         awayTableUpdate.setGoalsFor(awayTableUpdate.getGoalsFor() + match.getAwayScore());
 
         homeTableUpdate.setGoalsAgainst(homeTableUpdate.getGoalsAgainst() + match.getAwayScore());
         awayTableUpdate.setGoalsAgainst(awayTableUpdate.getGoalsAgainst() + match.getHomeScore());
 
-        //Goal diff calculator and table update
+        //Goal diff calculator
         homeTableUpdate.setGoalDifference(homeTableUpdate.getGoalDifference() + match.getHomeScore() - match.getAwayScore());
         awayTableUpdate.setGoalDifference(awayTableUpdate.getGoalDifference() + match.getAwayScore() - match.getHomeScore());
 
-        //update league table with home and away data. Overwrites previous entries
+        //update league table with home and away data.
         leagueTable.put(homeTeamName, homeTableUpdate);
         leagueTable.put(awayTeamName, awayTableUpdate);
     }
